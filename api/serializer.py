@@ -25,18 +25,22 @@ from api.models import Movie
 #         return instance
       
 class MovieSerializer(serializers.ModelSerializer):
+
     description = serializers.SerializerMethodField()
+    
     class Meta:
         model = Movie
-        field = "__all__"
+        fields = "__all__"
 
     def validate_title(self, val):
         if val == "Dexter":
             raise ValidationError("Cannot accept TV Series.")
+        return val
 
     def validate(self, data):
         if data["duration"] > 600:
             raise ValidationError("Cannot accept movies longer than 10 hours!")
+        return data
 
     def get_description(self, data):
         return f"Movie: {data.title} and Rating: {data.rating}"
